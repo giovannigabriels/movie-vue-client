@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+      crossorigin="anonymous"
+    />
+    <title>NetPlix 2 - Admin Panel</title>
+  </head>
+  <body>
+    <div id="app">
+
+      <!-- NAVBAR SECTION -->
+      <section id="navbar" >
+    <div class="home" >
+      <div class="nav-home sticky-top bg-white flex-md-nowrap p-0 shadow">
+        <div>
+          <img id="image" src="./image/icons8-netflix.svg" alt="NetPlix" />
+        </div>
+        <div>
+            <button id="signin" class="btn btn-danger"  v-if="!isLogin" v-on:click="signInHandler">Sign In</button>
+          </div>
+     
+        <div class="nav-menu"  v-if="isLogin">
+          <ul>
+            <li class="nav-item">
+              <a class="nav-link active" href="" id="nav-dashboard" v-on:click.prevent="dashboardHandler">
+                Dashboard</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="" id="nav-product" v-on:click.prevent="movieHandler">
+
+                Movies</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="" id="nav-category" v-on:click.prevent="genreHandler">
+
+                Genres</a
+              >
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="" id="nav-logs" v-on:click.prevent="logHandler">
+      
+                  Logs</a
+                >
+              </li>
+          </ul>
+        </div>
+
+        <div class="nav-menu" v-if="isLogin">
+          <ul >
+            <li class="nav-item">
+              <a class="nav-link">
+      
+                Hej, <span id="username"></span
+              >{{username}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-light" href="" id="nav-logout" v-on:click.prevent="logoutHandler">
+                Logout</a
+              >
+            </li>
+           </ul>
+         </div>
+      </div>
+    </div>
+      </section>
+       <!-- END NAVBAR SECTION -->
+
+<!-- Landing Page Section -->
+     <section id="landing-page">
+      <div class="app-home" v-if="page === 'landing'">
+        <div class="col-12 text-center align-middle text-dark">
+          <h1>Unlimited movies, TV shows, and more.</h1>
+          <h3>Watch anywhere. Cancel anytime.</h3>
+        </div>
+      </div>
+     </section>
+
+    <!-- END Landing Page Section -->
+
+    <section id="login-section" v-if="page === 'login'">
+   
+      <div class="login text-light">
+        <h3>Login</h3>
+        <form action="" v-on:submit.prevent="loginHandler">
+          <div class="mb-3">
+            <label for="login-email" class="form-label"
+              >Email address</label
+            >
+            <input
+              type="email"
+              class="form-control"
+              id="login-email"
+              placeholder="name@example.com"
+              required
+              v-model="dataLogin.email"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="login-password" class="form-label"
+              >Password</label
+            >
+            <input
+              class="form-control"
+              id="login-password"
+              rows="3"
+              required
+              v-model="dataLogin.password"
+            ></input>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+        <br />
+        <center>or Sign In with</center>
+        <br />
+        <center><div id="buttonDiv"></div></center>
+        <br>
+        <span>New to NetPlix? <a href="" v-on:click.prevent="signUpHandler">Sign up now</a></span>
+      </div>
+
+    </section>
+
+    <section id="register-section" v-if="page === 'register'">
+      <div class="register text-light">
+        <h3>Sign up and enjoy</h3>
+        <form action="" v-on:submit.prevent="registerHandler">
+            <div class="mb-3">
+                <label for="username" class="form-label"
+                  >Username</label
+                >
+                <input
+                  class="form-control"
+                  id="username"
+                  rows="3"
+                  v-model="dataRegister.username"
+                ></input>
+            </div>
+          <div class="mb-3">
+            <label for="register-email" class="form-label"
+              >Email address</label
+            >
+            <input
+              type="email"
+              class="form-control"
+              id="register-email"
+              placeholder="name@example.com"
+              v-model="dataRegister.email"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="register-password" class="form-label"
+              >Password</label
+            >
+            <input
+              class="form-control"
+              id="register-password"
+              rows="3"
+              v-model="dataRegister.password"
+            ></input>
+        </div>
+        <div class="mb-3">
+            <label for="phonenumber" class="form-label"
+              >Phone Number</label
+            >
+            <input
+              class="form-control"
+              id="phonenumber"
+              rows="3"
+              v-model="dataRegister.phoneNumber"
+            ></input>
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label"
+              >Address</label
+            >
+            <input
+              class="form-control"
+              id="address"
+              rows="3"
+              v-model="dataRegister.address"
+            ></input>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+      </div>
+    </section>
+
+
+     <!-- Home Section -->
+    <section id="home-section">
+
+         <!-- Dashboard Section -->
+        <section id="dashboard-section" v-if="page === 'dashboard'">
+            <div class="row dashboard my-5" style="justify-content: center;">
+              <div class="card mx-3" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Total Movies</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{movies.length}}</h6>
+                </div>
+              </div>
+              <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Total Genre</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{genres.length}}</h6>
+                </div>
+              </div>
+              </div>
+        </section>
+ <!-- End Dashboard Section -->
+
+
+         <!-- Movie Section -->
+        <section id="movie-section" v-if="page === 'movie'">
+            <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+          >
+            <h1 class="display-2">Movies</h1>
+            <button class="btn btn-primary rounded-pill" id="new-movie" v-on:click="addMovieHandler">
+              Add New Movie
+            </button>
+          </div>
+            <table class="table text-dark" style="width: 600px;">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col" width="180px">Image</th>
+                    <th scope="col" width="250px">Synopsis</th>
+                    <th scope="col" width="50px">Trailer</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Genre</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Status</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(movie,index) in movies" :key="index">
+                    <td scope="row">{{ index+1}}</td>
+                    <td class="fw-bold">{{movie.title}}</td>
+                    <td>
+                      <img
+                        :src="movie.imgUrl"
+                        class="img-fluid"
+                    
+                      />
+                    </td>
+                    <td>{{movie.synopsis}}</td>
+                    <td><iframe
+                        width="200"
+                        height="150"
+                        :src="movie.trailerUrl"
+                      >
+                      </iframe></td>
+                    <td class="fw-bold">{{movie.rating}}</td>
+                    <td>{{movie.Genre.name}}</td>
+                    <td>{{movie.User.email}}</td>
+                    <td>
+                      <select name="Status" id="" v-on:change="updateStatusHandler(movie.id, $event)" >
+                          <option v-for="status in optionStatus" :value="status" :selected="movie.status===status">{{status}}</option>
+                          <!-- <option value="inactive">inactive</option>
+                          <option value="archived">archived</option> -->
+                      </select>
+                    </td>
+                    <td>
+                        <a data-id="${el.id}" href="" class="ms-3 delete-movie"
+                          v-on:click.prevent="editMovieHandler(movie.id)"
+                          ><span
+                            class="icon material-symbols-outlined text-danger"
+                            >Edit</span
+                          ></a
+                        >
+                      </td>
+                </tbody>
+              </table>
+        </section>
+ <!-- End Movie Section -->
+
+
+         <!-- New Movie Section -->
+        <section id="new-movie-section" v-if="page === 'createmovie'">
+            <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+          >
+            <h1 class="display-2">New Movie</h1>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <form id="movie-form" v-on:submit.prevent="submitAddMovieHandler">
+                <div class="mb-3">
+                  <label for="movie-title"
+                    >Title <span class="text-danger fw-bold">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="movie-title"
+                    placeholder="Enter product name"
+                    autocomplete="off"
+                    required
+                    v-model="addMovie.title"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="movie-genre"
+                    >Genre <span class="text-danger fw-bold">*</span></label
+                  >
+                  <select id="movie-genre" class="form-select" required v-model="addMovie.genreId">
+                    <option value="" selected disabled>
+                      -- Select Genre --
+                    </option>
+                    <option v-for="(genre,index) in genres" :key="index" :value="genre.id">{{genre.name}}</option >
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="movie-synopsis"
+                    >Synopsis <span class="text-danger fw-bold">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="movie-synopsis"
+                    placeholder="Enter product description"
+                    autocomplete="off"
+                    required
+                    v-model="addMovie.synopsis"
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-12 col-md-6">
+                    <div class="mb-3">
+                      <label for="movie-rating"
+                        >Rating
+                        <span class="text-danger fw-bold">*</span></label
+                      >
+                      <input
+                        type="number"
+                        min="0"
+                        class="form-control"
+                        id="movie-rating"
+                        placeholder="Enter product stock"
+                        autocomplete="off"
+                        required
+                        v-model="addMovie.rating"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="movie-imgUrl"
+                    >Image <span class="text-danger fw-bold">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="movie-imgUrl"
+                    placeholder="Enter product image url"
+                    autocomplete="off"
+                    required
+                    v-model="addMovie.imgUrl"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="movie-trailerUrl"
+                    >Trailer <span class="text-danger fw-bold">*</span>
+                    <span class="text-danger fw-bold"
+                      >Please enter youtube embed link</span
+                    >
+                    <a
+                      target="_blank"
+                      href="https://support.google.com/youtube/answer/171780?hl=en"
+                      >Click here</a
+                    >
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="movie-trailerUrl"
+                    placeholder="Enter movie trailer url"
+                    autocomplete="off"
+                    required
+                    v-model="addMovie.trailerUrl"
+                  />
+                </div>
+                <div class="row mt-5 mb-3">
+                  <div class="col-6">
+                    <a
+                      class="btn btn-lg btn-light rounded-pill w-100 p-2"
+                      href=""
+                      id="cancel-add-movie" v-on:click.prevent="cancelAddMovieHandler"
+                      >Cancel</a
+                    >
+                  </div>
+                  <div class="col-6">
+                    <button
+                      class="btn btn-lg btn-primary rounded-pill w-100 p-2"
+                      type="submit"
+                      href=""
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </section>
+        <!-- End New Movie Section -->
+
+        <!-- Edit Movie Section -->
+        <section id="edit-movie-section" v-if="page === 'editmovie'">
+          <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+        >
+          <h1 class="display-2">Edit Movie</h1>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <form id="movie-form" v-on:submit.prevent="submitEditMovieHandler">
+              <div class="mb-3">
+                <label for="movie-title"
+                  >Title <span class="text-danger fw-bold">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="movie-title"
+                  placeholder="Enter product name"
+                  autocomplete="off"
+                  required
+                  v-model="formEditMovie.title"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="movie-genre"
+                  >Genre <span class="text-danger fw-bold">*</span></label
+                >
+                <select id="movie-genre" class="form-select" required v-model="formEditMovie.genreId">
+                  <!-- <option value="" disabled>
+                    -- Select Genre --
+                  </option> -->
+                  <option v-for="(genre,index) in genres" 
+                  :key="genre.id" 
+                  :value="genre.id" 
+                  :selected="genre.id==formEditMovie.genreId">{{genre.name}}</option >
+                   
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="movie-synopsis"
+                  >Synopsis <span class="text-danger fw-bold">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="movie-synopsis"
+                  placeholder="Enter product description"
+                  autocomplete="off"
+                  required
+                  v-model="formEditMovie.synopsis"
+                />
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <div class="mb-3">
+                    <label for="movie-rating"
+                      >Rating
+                      <span class="text-danger fw-bold">*</span></label
+                    >
+                    <input
+                      type="number"
+                      min="0"
+                      class="form-control"
+                      id="movie-rating"
+                      placeholder="Enter product stock"
+                      autocomplete="off"
+                      required
+                      v-model="formEditMovie.rating"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="movie-imgUrl"
+                  >Image <span class="text-danger fw-bold">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="movie-imgUrl"
+                  placeholder="Enter product image url"
+                  autocomplete="off"
+                  required
+                  v-model="formEditMovie.imgUrl"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="movie-trailerUrl"
+                  >Trailer <span class="text-danger fw-bold">*</span>
+                  <span class="text-danger fw-bold"
+                    >Please enter youtube embed link</span
+                  >
+                  <a
+                    target="_blank"
+                    href="https://support.google.com/youtube/answer/171780?hl=en"
+                    >Click here</a
+                  >
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="movie-trailerUrl"
+                  placeholder="Enter movie trailer url"
+                  autocomplete="off"
+                  required
+                  v-model="formEditMovie.trailerUrl"
+                />
+              </div>
+              <div class="row mt-5 mb-3">
+                <div class="col-6">
+                  <a
+                    class="btn btn-lg btn-light rounded-pill w-100 p-2"
+                    href=""
+                    id="cancel-add-movie" v-on:click.prevent="cancelEditAddMovieHandler"
+                    >Cancel</a
+                  >
+                </div>
+                <div class="col-6">
+                  <button
+                    class="btn btn-lg btn-primary rounded-pill w-100 p-2"
+                    type="submit"
+                    href=""
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        </section>
+        <!-- End Edit Movie Section -->
+
+
+        <!-- Genre Section -->
+        <section id="genre-section" v-if="page === 'genre'">
+
+            <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+          >
+            <h1 class="display-2">Genre</h1>
+            <button class="btn btn-primary rounded-pill" id="new-genre" v-on:click="addGenreHandler">
+              <span class="icon material-symbols-outlined">add</span>New Genre
+            </button>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <table class="table" style="width: 1000px;">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col" width="50px"></th>
+                    <th scope="col" width="50px"></th>
+                  </tr>
+                </thead>
+                <tbody id="table-genre">
+                  <tr v-for="(genre, index) in genres" :key="index">
+                    <td scope="row">{{index+1}}</td>
+                    <td class="fw-bold">{{genre.name}}</td>
+                    <td>
+                        <a href="" class="ms-3"
+                        v-on:click.prevent="editGenreHandler(genre.name,genre.id)"
+                          ><span
+                            class="icon material-symbols-outlined text-danger"
+                            >EDIT</span
+                          ></a
+                        >
+                      </td>
+                    <td>
+                      <a href="" class="ms-3"
+                      v-on:click.prevent="deleteGenreHandler(genre.id)"
+                        ><span
+                          class="icon material-symbols-outlined text-danger"
+                          >delete</span
+                        ></a
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+<!-- End Genre Section -->
+
+        <!-- New Genre Section -->
+        <section id="new-genre-section" v-if="page === 'creategenre'">
+            <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+          >
+            <h1 class="display-2">New Genre</h1>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <form id="genre-form" v-on:submit.prevent="submitAddGenre">
+                <div class="mb-3">
+                  <label for="genre-name"
+                    >Name <span class="text-danger fw-bold">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="genre-name"
+                    placeholder="Enter category name"
+                    autocomplete="off"
+                    required
+                    v-model="addGenre.name"
+                  />
+                </div>
+                <div class="row mt-5 mb-3">
+                  <div class="col-6">
+                    <a
+                      id="cancel-add-genre"
+                      class="btn btn-lg btn-light rounded-pill w-100 p-2"
+                      href=""
+                      v-on:click.prevent="cancelAddGenre"
+                      >Cancel</a
+                    >
+                  </div>
+                  <div class="col-6">
+                    <button
+                      class="btn btn-lg btn-primary rounded-pill w-100 p-2"
+                      type="submit"
+                      href=""
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </section>
+        <!-- End New Genre Section -->
+
+        <!-- Edit Genre Section -->
+        <section v-if="page === 'editGenreForm'">
+          <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+        >
+          <h1 class="display-2">Edit Genre</h1>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <form id="genre-form" v-on:submit.prevent="submitEditGenre">
+              <div class="mb-3">
+                <label for="genre-name"
+                  >Name <span class="text-danger fw-bold">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="genre-name"
+                  placeholder="Enter category name"
+                  autocomplete="off"
+                  required
+                v-model="formEditGenre.name"
+                />
+              </div>
+              <div class="row mt-5 mb-3">
+                <div class="col-6">
+                  <a
+                    id="cancel-add-genre"
+                    class="btn btn-lg btn-light rounded-pill w-100 p-2"
+                    href=""
+                    v-on:click.prevent="cancelAddGenre"
+                    >Cancel</a
+                  >
+                </div>
+                <div class="col-6">
+                  <button
+                    class="btn btn-lg btn-primary rounded-pill w-100 p-2"
+                    type="submit"
+                    href=""
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        </section>
+         <!-- END Edit Genre Section -->
+
+        <!-- Logs Section -->
+        <section id="logs-sectionn" v-if="page === 'logs'">
+
+            <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+          >
+            <h1 class="display-2">Logs</h1>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <table class="table" style="width: 1000px;">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Updated By</th>
+                  </tr>
+                </thead>
+                <tbody id="table-genre">
+                  <tr v-for="(log, index) in logs" :key="index">
+                    <td scope="row">#{{index+1}}</td>
+                    <td class="fw-bold">{{log.title}}</td>
+                  
+                    <td>{{log.description}}</td>
+                    <td>
+                       {{log.createdAt}}
+                      </td>
+                      <td>
+                        {{log.updatedBy}}
+                       </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <!-- End Log Section -->
+
+    </section>
+            <!-- End Home Section -->
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="/script.js"></script>
+  </body>
+</html>

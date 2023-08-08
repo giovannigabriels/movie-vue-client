@@ -1,0 +1,23 @@
+{
+  "name": "p2-cms-on-vuejs-client",
+  "version": "1.0.0",
+  "description": "CMS on Vue.js",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmt-28-bouvardia-fox/p2-cms-on-vuejs-client.git"
+  },
+  "keywords": [],
+  "author": "Giovanni Gabriel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rmt-28-bouvardia-fox/p2-cms-on-vuejs-client/issues"
+  },
+  "homepage": "https://github.com/rmt-28-bouvardia-fox/p2-cms-on-vuejs-client#readme",
+  "devDependencies": {
+    "vite": "^3.1.3"
+  }
+}
